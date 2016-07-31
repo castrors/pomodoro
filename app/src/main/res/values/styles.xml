@@ -22,4 +22,9 @@
         <item name="android:textColor">@color/tabText</item>
     </style>
 
+    <style name="TextCountDownTime">
+        <item name="android:textSize">76sp</item>
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
 </resources>

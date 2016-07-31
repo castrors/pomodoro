@@ -5,6 +5,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.castrodev.pomodoro.newpomodoro.NewPomodoroFragment;
+
 /**
  * Created by rodrigocastro on 31/07/16.
  */
@@ -21,7 +23,7 @@ public class ActionsFragmentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return SampleFragment.newInstance(position + 1);
+        return NewPomodoroFragment.newInstance();
     }
 
     @Override
