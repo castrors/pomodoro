@@ -1,5 +1,7 @@
 package com.castrodev.pomodoro.history;
 
+import com.castrodev.pomodoro.model.Pomodoro;
+
 import java.util.List;
 
 /**
@@ -9,7 +11,7 @@ public class HistoryContract {
 
     interface View {
 
-        void showPomodoroHistory(List<String> pomodoroList);
+        void showPomodoroHistory(List<Pomodoro> pomodoroList);
 
     }
 

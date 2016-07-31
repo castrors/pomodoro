@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.castrodev.pomodoro.R;
+import com.castrodev.pomodoro.model.Pomodoro;
 
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class HistoryFragment extends Fragment implements HistoryContract.View {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mActionListener = new HistoryPresenter(this);
+        mActionListener = new HistoryPresenter(this, getContext());
     }
 
     @Nullable
@@ -50,7 +51,7 @@ public class HistoryFragment extends Fragment implements HistoryContract.View {
     }
 
     @Override
-    public void showPomodoroHistory(List<String> pomodoroList) {
-        
+    public void showPomodoroHistory(List<Pomodoro> pomodoroList) {
+
     }
 }
