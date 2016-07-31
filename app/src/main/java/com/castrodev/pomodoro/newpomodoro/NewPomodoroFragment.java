@@ -35,7 +35,6 @@ public class NewPomodoroFragment extends Fragment implements NewPomodoroContract
     }
 
     public NewPomodoroFragment() {
-        // Required empty public constructor
     }
 
     @Override
