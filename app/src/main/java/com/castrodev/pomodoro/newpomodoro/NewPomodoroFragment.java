@@ -4,10 +4,10 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.castrodev.pomodoro.R;
@@ -40,7 +40,7 @@ public class NewPomodoroFragment extends Fragment implements NewPomodoroContract
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mActionListener = new NewPomodoroPresenter(this);
+        mActionListener = new NewPomodoroPresenter(this, getContext());
     }
 
     @Nullable
@@ -61,8 +61,10 @@ public class NewPomodoroFragment extends Fragment implements NewPomodoroContract
     @OnClick(R.id.fabStartStopPomodoro)
     public void startStopPomodoro() {
         if (isCountDownTimeRunning()) {
+            Log.i("NEW_POMODORO", "Stopping the counter");
             mActionListener.stopCounter();
         } else {
+            Log.i("NEW_POMODORO", "Starting the counter");
             mActionListener.startCounter();
         }
 
@@ -74,13 +76,14 @@ public class NewPomodoroFragment extends Fragment implements NewPomodoroContract
 
     @Override
     public void showCountDownTime(String time) {
-
+        textCountDownTime.setText(time);
     }
 
     @Override
     public void setCountDownTimeRunning(boolean running) {
         this.running = running;
-        changeFabIcon(running ? R.drawable.ic_stop : R.drawable.ic_start );
+        changeFabIcon(running ? R.drawable.ic_stop : R.drawable.ic_start);
+        resetCountView();
 
     }
 
@@ -88,5 +91,8 @@ public class NewPomodoroFragment extends Fragment implements NewPomodoroContract
         fabStartStopPomodoro.setImageResource(iconRes);
     }
 
+    private void resetCountView() {
+        textCountDownTime.setText("25:00");
+    }
 
 }

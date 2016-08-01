@@ -17,7 +17,7 @@ public class Pomodoro extends RealmObject {
     @PrimaryKey
     private long id;
     private String duration;
-    private int status;
+    private String status;
     private Date date;
 
     public long getId() {
@@ -36,11 +36,11 @@ public class Pomodoro extends RealmObject {
         this.duration = duration;
     }
 
-    public int getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
@@ -65,4 +65,8 @@ public class Pomodoro extends RealmObject {
         });
     }
 
+    @Override
+    public String toString() {
+        return String.format("{duration: %s, status: %s, date: %s}", duration, status, date);
+    }
 }
