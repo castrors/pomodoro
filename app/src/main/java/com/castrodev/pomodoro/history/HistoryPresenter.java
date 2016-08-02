@@ -23,6 +23,8 @@ public class HistoryPresenter implements HistoryContract.UserActionsListener {
 
     @Override
     public void requestPomodoroHistory() {
+        mHistoryView.setProgressIndicator(true);
+        mHistoryView.setProgressIndicator(false);
         mHistoryView.showPomodoroHistory(Pomodoro.getAll(context));
     }
 }

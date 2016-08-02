@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.castrodev.pomodoro.history.HistoryFragment;
 import com.castrodev.pomodoro.newpomodoro.NewPomodoroFragment;
 
 /**
@@ -12,8 +13,15 @@ import com.castrodev.pomodoro.newpomodoro.NewPomodoroFragment;
  */
 public class ActionsFragmentPagerAdapter extends FragmentPagerAdapter {
 
+    private static final String TAB_NEW = "NEW";
+    private static final String TAB_HISTORY = "HISTORY";
+
+    private static final int POSITION_NEW = 0;
+    private static final int POSITION_HISTORY = 1;
+
+
     final int TABS_COUNT = 2;
-    private String tabTitles[] = new String[] { "New", "History"};
+    private String tabTitles[] = new String[]{TAB_NEW, TAB_HISTORY};
     private Context context;
 
     public ActionsFragmentPagerAdapter(FragmentManager fm, Context context) {
@@ -23,7 +31,13 @@ public class ActionsFragmentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return NewPomodoroFragment.newInstance();
+        switch (position) {
+            case POSITION_NEW:
+                return NewPomodoroFragment.newInstance();
+            case POSITION_HISTORY:
+                return HistoryFragment.newInstance();
+        }
+        return new Fragment();
     }
 
     @Override

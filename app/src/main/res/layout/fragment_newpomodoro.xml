@@ -6,11 +6,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <FrameLayout
-        android:id="@+id/contentFrame"
+        android:id="@+id/content_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <TextView
-            android:id="@+id/textCountDownTime"
+            android:id="@+id/text_count_down_time"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
@@ -20,12 +20,12 @@
 
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabStartStopPomodoro"
+        android:id="@+id/fab_start_stop_pomodoro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/ic_start"
         app:fabSize="normal"
-        app:layout_anchor="@id/contentFrame"
+        app:layout_anchor="@id/content_frame"
         app:layout_anchorGravity="bottom|right|end"/>
 </android.support.design.widget.CoordinatorLayout>

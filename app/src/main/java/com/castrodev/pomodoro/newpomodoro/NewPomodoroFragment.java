@@ -21,9 +21,9 @@ import butterknife.OnClick;
  */
 public class NewPomodoroFragment extends Fragment implements NewPomodoroContract.View {
 
-    @BindView(R.id.textCountDownTime)
+    @BindView(R.id.text_count_down_time)
     TextView textCountDownTime;
-    @BindView(R.id.fabStartStopPomodoro)
+    @BindView(R.id.fab_start_stop_pomodoro)
     FloatingActionButton fabStartStopPomodoro;
 
     private boolean running;
@@ -58,7 +58,7 @@ public class NewPomodoroFragment extends Fragment implements NewPomodoroContract
     }
 
 
-    @OnClick(R.id.fabStartStopPomodoro)
+    @OnClick(R.id.fab_start_stop_pomodoro)
     public void startStopPomodoro() {
         if (isCountDownTimeRunning()) {
             Log.i("NEW_POMODORO", "Stopping the counter");

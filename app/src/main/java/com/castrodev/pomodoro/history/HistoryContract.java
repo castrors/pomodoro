@@ -11,6 +11,7 @@ public class HistoryContract {
 
     interface View {
 
+        void setProgressIndicator(boolean active);
         void showPomodoroHistory(List<Pomodoro> pomodoroList);
 
     }

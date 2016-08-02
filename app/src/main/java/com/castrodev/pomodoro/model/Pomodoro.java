@@ -7,26 +7,15 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by rodrigocastro on 31/07/16.
  */
 public class Pomodoro extends RealmObject {
 
-    @PrimaryKey
-    private long id;
     private String duration;
     private String status;
     private Date date;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public String getDuration() {
         return duration;
@@ -56,13 +45,20 @@ public class Pomodoro extends RealmObject {
         return RealmHelper.getRealm(context).where(Pomodoro.class).findAll();
     }
 
-    public void save(Context context){
-        RealmHelper.getRealm(context).executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                realm.copyToRealmOrUpdate(Pomodoro.this);
-            }
-        });
+    public void save(Context context) {
+        Realm realm = RealmHelper.getRealm(context);
+        realm.beginTransaction();
+
+        Pomodoro managedPomodoro = realm.createObject(Pomodoro.class);
+        managedPomodoro.clone(this);
+        realm.commitTransaction();
+
+    }
+
+    private void clone(Pomodoro pomodoro) {
+        this.date = pomodoro.date;
+        this.duration = pomodoro.duration;
+        this.status = pomodoro.status;
     }
 
     @Override

@@ -5,18 +5,19 @@
     android:layout_margin="16dp">
 
     <TextView
-        android:id="@+id/textTime"
+        android:id="@+id/text_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/HistoryTime"
         android:text="25:00"/>
     <TextView
-        android:id="@+id/textStatus"
+        android:id="@+id/text_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textTime"
+        android:layout_below="@+id/text_time"
         android:text="Finished"/>
     <TextView
+        android:id="@+id/text_relative_time"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
