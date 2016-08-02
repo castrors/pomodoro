@@ -1,4 +1,20 @@
 <resources>
     <string name="app_name">Pomodoro</string>
     <string name="clock_minutes_and_seconds" formatted="false">%02d:%02d</string>
+    <string name="format_hour_am_pm">hh a</string>
+
+    <plurals name="seconds" >
+        <item quantity="one">one second ago</item>
+        <item quantity="other">%d seconds ago</item>
+    </plurals>
+
+    <plurals name="minutes" >
+        <item quantity="one">one minute ago</item>
+        <item quantity="other">%d minutes ago</item>
+    </plurals>
+
+    <plurals name="hours" >
+        <item quantity="one">one hour ago</item>
+        <item quantity="other">%d hours ago</item>
+    </plurals>
 </resources>

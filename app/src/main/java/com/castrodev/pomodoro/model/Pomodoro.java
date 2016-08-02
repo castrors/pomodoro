@@ -7,6 +7,7 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmObject;
+import io.realm.Sort;
 
 /**
  * Created by rodrigocastro on 31/07/16.
@@ -42,7 +43,7 @@ public class Pomodoro extends RealmObject {
     }
 
     public static List<Pomodoro> getAll(Context context) {
-        return RealmHelper.getRealm(context).where(Pomodoro.class).findAll();
+        return RealmHelper.getRealm(context).where(Pomodoro.class).findAllSorted("date", Sort.DESCENDING);
     }
 
     public void save(Context context) {
@@ -65,4 +66,5 @@ public class Pomodoro extends RealmObject {
     public String toString() {
         return String.format("{duration: %s, status: %s, date: %s}", duration, status, date);
     }
+
 }

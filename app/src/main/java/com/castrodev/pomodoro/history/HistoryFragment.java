@@ -44,7 +44,7 @@ public class HistoryFragment extends Fragment implements HistoryContract.View {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mListAdapter = new HistoryListAdapter(new ArrayList<Pomodoro>(0));
+        mListAdapter = new HistoryListAdapter(new ArrayList<Pomodoro>(0), getContext());
         mActionListener = new HistoryPresenter(this, getContext());
     }
 
