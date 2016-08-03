@@ -1,7 +1,9 @@
 package com.castrodev.pomodoro.newpomodoro;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.CountDownTimer;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -20,15 +22,19 @@ public class NewPomodoroPresenter implements NewPomodoroContract.UserActionsList
 
     public static final String FINISHED = "Finished";
     public static final String STOPPED = "Stopped";
-    private int DEFAULT_DURATION_MINUTES = 25;
-    private long DEFAULT_DURATION_MILLIS = DEFAULT_DURATION_MINUTES * 60 * 1000;
+    private static final String POMODORO_DURATION = "pomodoro_duration";
+    private static final int DEFAULT_DURATION = 25;
+
 
     private Context context;
 
     @NonNull
     private final NewPomodoroContract.View mNewPomodoroView;
     private CountDownTimer countDownTimer;
-    private long duration;
+    private long displayableDuration;
+    private int durationMinutes = DEFAULT_DURATION;
+    private long defaultDurationMillis;
+
 
     public NewPomodoroPresenter(@NonNull NewPomodoroContract.View newPomodoroView, Context context) {
         mNewPomodoroView = checkNotNull(newPomodoroView);
@@ -37,17 +43,18 @@ public class NewPomodoroPresenter implements NewPomodoroContract.UserActionsList
 
     @Override
     public void startCounter() {
+        updateDurationTime();
         mNewPomodoroView.setCountDownTimeRunning(true);
-        countDownTimer = new CountDownTimer(DEFAULT_DURATION_MILLIS, 1000) {
+        countDownTimer = new CountDownTimer(defaultDurationMillis, 1000) {
 
             public void onTick(long millisUntilFinished) {
-                duration = millisUntilFinished;
-                mNewPomodoroView.showCountDownTime(getHumanReadableDuration(duration));
+                displayableDuration = millisUntilFinished;
+                mNewPomodoroView.showCountDownTime(getHumanReadableDuration(displayableDuration));
             }
 
             public void onFinish() {
                 Log.i("NEW_POMODORO", "Finished the pomodoro");
-                duration = 0;
+                displayableDuration = 0;
                 savePomodoro(FINISHED);
                 mNewPomodoroView.setCountDownTimeRunning(false);
             }
@@ -56,7 +63,7 @@ public class NewPomodoroPresenter implements NewPomodoroContract.UserActionsList
 
     @Override
     public void stopCounter() {
-        if(countDownTimer!= null){
+        if (countDownTimer != null) {
             Log.i("NEW_POMODORO", "Canceled the pomodoro");
             countDownTimer.cancel();
             savePomodoro(STOPPED);
@@ -64,14 +71,23 @@ public class NewPomodoroPresenter implements NewPomodoroContract.UserActionsList
         }
     }
 
+    @Override
+    public void updateTimerLength() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        durationMinutes = Integer.parseInt(prefs.getString(POMODORO_DURATION, String.valueOf(DEFAULT_DURATION)));
+        updateDurationTime();
+        mNewPomodoroView.showCountDownTime(getHumanReadableDuration(defaultDurationMillis));
+    }
+
     private void savePomodoro(String status) {
-        long millis = DEFAULT_DURATION_MILLIS-duration;
+        updateDurationTime();
+        long millis = defaultDurationMillis - displayableDuration;
         Pomodoro pomodoro = new Pomodoro();
         pomodoro.setDuration(getHumanReadableDuration(millis));
         pomodoro.setStatus(status);
         pomodoro.setDate(new Date());
         pomodoro.save(context);
-        Log.i("NEW_POMODORO", "Saved: "+pomodoro.toString());
+        Log.i("NEW_POMODORO", "Saved: " + pomodoro.toString());
     }
 
     private String getHumanReadableDuration(long millis) {
@@ -80,5 +96,9 @@ public class NewPomodoroPresenter implements NewPomodoroContract.UserActionsList
                 TimeUnit.MILLISECONDS.toSeconds(millis) -
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))
         );
+    }
+
+    private void updateDurationTime() {
+        defaultDurationMillis =  durationMinutes * 60 * 1000;
     }
 }

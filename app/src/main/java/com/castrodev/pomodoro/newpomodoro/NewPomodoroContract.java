@@ -19,5 +19,6 @@ public interface NewPomodoroContract {
 
         void stopCounter();
 
+        void updateTimerLength();
     }
 }

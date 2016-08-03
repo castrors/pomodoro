@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.castrodev.pomodoro.MainActivity;
 import com.castrodev.pomodoro.R;
 
 import butterknife.BindView;
@@ -53,6 +54,12 @@ public class NewPomodoroFragment extends Fragment implements NewPomodoroContract
         return root;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mActionListener.updateTimerLength();
+    }
+
     private void setupView() {
         setCountDownTimeRunning(false);
     }
@@ -82,17 +89,16 @@ public class NewPomodoroFragment extends Fragment implements NewPomodoroContract
     @Override
     public void setCountDownTimeRunning(boolean running) {
         this.running = running;
+        ((MainActivity) getActivity()).setPomodoroRunning(running);
         changeFabIcon(running ? R.drawable.ic_stop : R.drawable.ic_start);
-        resetCountView();
+        textCountDownTime.setEnabled(running);
+        if(mActionListener!=null)
+            mActionListener.updateTimerLength();
 
     }
 
     private void changeFabIcon(int iconRes) {
         fabStartStopPomodoro.setImageResource(iconRes);
-    }
-
-    private void resetCountView() {
-        textCountDownTime.setText("25:00");
     }
 
 }

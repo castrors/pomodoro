@@ -15,6 +15,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="25:00"
+            android:textColor="@drawable/timer_text"
             style="@style/TextCountDownTime"/>
     </FrameLayout>
 
