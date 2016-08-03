@@ -1,75 +1,87 @@
 package com.castrodev.pomodoro.adapter;
 
+
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.castrodev.pomodoro.R;
+import com.castrodev.pomodoro.helper.DateHelper;
+import com.castrodev.pomodoro.model.ContentItem;
+import com.castrodev.pomodoro.model.HeaderItem;
+import com.castrodev.pomodoro.model.HistoryItem;
 import com.castrodev.pomodoro.model.Pomodoro;
 import com.castrodev.pomodoro.viewholder.HistoryContentViewHolder;
+import com.castrodev.pomodoro.viewholder.HistoryHeaderViewHolder;
 
 import org.joda.time.DateTime;
-import org.joda.time.Duration;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
+import java.util.TreeMap;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+
 
 /**
  * Created by rodrigocastro on 01/08/16.
  */
-public class HistoryListAdapter extends RecyclerView.Adapter<HistoryContentViewHolder> {
+public class HistoryListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private static final int ONE_MINUTE_IN_MILLIS = 60 * 1000;
-    private static final int ONE_HOUR_IN_MILLIS = 60 * ONE_MINUTE_IN_MILLIS;
-    private static final int THREE_HOURS_IN_MILLIS = 3 * ONE_HOUR_IN_MILLIS;
     private List<Pomodoro> mPomodoros;
+    private List<HistoryItem> mHistoryItems;
+    private TreeMap<Date,List<Pomodoro>> mTreeMapPomodoros;
     private final Context context;
 
     public HistoryListAdapter(List<Pomodoro> pomodoros, Context context) {
         this.mPomodoros = pomodoros;
         this.context = context;
+
     }
 
     @Override
-    public HistoryContentViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+
         LayoutInflater mInflater = LayoutInflater.from(viewGroup.getContext());
-        ViewGroup viewGroupDefault = (ViewGroup) mInflater.inflate(R.layout.item_history_content, viewGroup, false);
-        return new HistoryContentViewHolder(viewGroupDefault);
+        if (viewType == HistoryItem.TYPE_HEADER) {
+            View itemView = mInflater.inflate(R.layout.item_history_header, viewGroup, false);
+            return new HistoryHeaderViewHolder(itemView);
+        } else {
+            View itemView = mInflater.inflate(R.layout.item_history_content, viewGroup, false);
+            return new HistoryContentViewHolder(itemView);
+        }
     }
 
     @Override
-    public void onBindViewHolder(HistoryContentViewHolder viewHolder, final int position) {
-        Pomodoro pomodoro = mPomodoros.get(position);
-        viewHolder.textTime.setText(pomodoro.getDuration());
-        viewHolder.textRelativeTime.setText(getRelativeTimeText(pomodoro.getDate()));
-        viewHolder.textStatus.setText(pomodoro.getStatus());
-    }
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
 
-    private String getRelativeTimeText(Date date) {
-        Duration duration = new Duration(date.getTime(), DateTime.now().getMillis());
-        String relativeTime = "";
-        if(duration.getMillis()<ONE_MINUTE_IN_MILLIS)
-            relativeTime = context.getResources().getQuantityString(R.plurals.seconds, ((int) duration.getStandardSeconds()), duration.getStandardSeconds());
-        else if(duration.getMillis()<ONE_HOUR_IN_MILLIS)
-            relativeTime = context.getResources().getQuantityString(R.plurals.minutes, ((int) duration.getStandardMinutes()), duration.getStandardMinutes());
-        else if(duration.getMillis()<THREE_HOURS_IN_MILLIS)
-            relativeTime = context.getResources().getQuantityString(R.plurals.hours, ((int) duration.getStandardHours()), duration.getStandardHours());
-        else{
-            DateFormat dateFormat = new SimpleDateFormat(context.getString(R.string.format_hour_am_pm), Locale.getDefault());
-            relativeTime = dateFormat.format(date);
+        int type = getItemViewType(position);
+        if (type == HistoryItem.TYPE_HEADER) {
+            HeaderItem header = (HeaderItem) mHistoryItems.get(position);
+            HistoryHeaderViewHolder holder = (HistoryHeaderViewHolder) viewHolder;
+            holder.textHeader.setText(DateHelper.getRelativeDateText(header.getDate()));
+        } else {
+            ContentItem content = (ContentItem) mHistoryItems.get(position);
+            HistoryContentViewHolder holder = (HistoryContentViewHolder) viewHolder;
+            holder.textTime.setText(content.getPomodoro().getDuration());
+            holder.textRelativeTime.setText(DateHelper.getRelativeTimeText(context, content.getPomodoro().getDate()));
+            holder.textStatus.setText(content.getPomodoro().getStatus());
         }
-        return relativeTime;
     }
 
     @Override
     public int getItemCount() {
-        return mPomodoros.size();
+        return mHistoryItems.size();
+    }
+
+
+    @Override
+    public int getItemViewType(int position) {
+        return mHistoryItems.get(position).getType();
     }
 
     public void replaceData(List<Pomodoro> pomodoros) {
@@ -79,6 +91,42 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryContentViewH
 
     private void setList(List<Pomodoro> pomodoros) {
         mPomodoros = checkNotNull(pomodoros);
+        createTreeMap();
+        createHistoryListItem();
+    }
+
+    private void createTreeMap() {
+        mTreeMapPomodoros = new TreeMap<>(new Comparator<Date>() {
+            @Override
+            public int compare(Date older, Date mostRecent) {
+                return mostRecent.compareTo(older);
+            }
+        });
+        for (Pomodoro pomodoro: mPomodoros) {
+            Date currentDate = pomodoro.getDate();
+            DateTime dateTime = new DateTime(currentDate);
+            dateTime = dateTime.withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0);
+            List<Pomodoro> pomodoroList = mTreeMapPomodoros.get(dateTime.toDate());
+            if(pomodoroList==null)
+                pomodoroList = new ArrayList<>();
+            pomodoroList.add(pomodoro);
+            mTreeMapPomodoros.put(dateTime.toDate(), pomodoroList);
+        }
+    }
+
+    public void createHistoryListItem(){
+
+        mHistoryItems = new ArrayList<>();
+        for (Date date : mTreeMapPomodoros.keySet()) {
+            HeaderItem header = new HeaderItem();
+            header.setDate(date);
+            mHistoryItems.add(header);
+            for (Pomodoro pomodoro : mTreeMapPomodoros.get(date)) {
+                ContentItem content = new ContentItem();
+                content.setPomodoro(pomodoro);
+                mHistoryItems.add(content);
+            }
+        }
     }
 
 
