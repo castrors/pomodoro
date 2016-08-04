@@ -23,7 +23,7 @@ public class DateHelper {
     private static final int THREE_HOURS_IN_MILLIS = 3 * ONE_HOUR_IN_MILLIS;
     private static final int NONE = 0;
     private static final int ONE_DAY = 1;
-    private static final String PATTERN = "dd/MM/yy";
+    private static final String PATTERN = "MM/dd/yy";
 
     public static String getRelativeTimeText(Context context, Date date) {
         Duration duration = new Duration(date.getTime(), DateTime.now().getMillis());
